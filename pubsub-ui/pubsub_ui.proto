@@ -1,0 +1,24 @@
+syntax="proto3";
+package pubsubui;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/pubsubui";
+
+service PubSubUI{
+  // Fetch PubSub message from the provided PubSub Topic
+  rpc Fetch(TopicSubscription) returns (stream Message) {}
+}
+
+message TopicSubscription{
+  string gcp_project_id = 1;
+  string pubsub_topic_name = 2;
+  string pubsub_subscriber_name = 3;
+  int32 timeout = 4;
+}
+
+message Message {
+  bytes data = 1;
+  bool is_empty = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
