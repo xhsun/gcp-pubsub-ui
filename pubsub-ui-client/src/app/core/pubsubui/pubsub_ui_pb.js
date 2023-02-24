@@ -91,9 +91,7 @@ proto.pubsubui.TopicSubscription.prototype.toObject = function(opt_includeInstan
 proto.pubsubui.TopicSubscription.toObject = function(includeInstance, msg) {
   var f, obj = {
     gcpProjectId: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    pubsubTopicName: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    pubsubSubscriberName: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    timeout: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    pubsubTopicName: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -138,14 +136,6 @@ proto.pubsubui.TopicSubscription.deserializeBinaryFromReader = function(msg, rea
       var value = /** @type {string} */ (reader.readString());
       msg.setPubsubTopicName(value);
       break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setPubsubSubscriberName(value);
-      break;
-    case 4:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setTimeout(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -189,20 +179,6 @@ proto.pubsubui.TopicSubscription.serializeBinaryToWriter = function(message, wri
       f
     );
   }
-  f = message.getPubsubSubscriberName();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
-      f
-    );
-  }
-  f = message.getTimeout();
-  if (f !== 0) {
-    writer.writeInt32(
-      4,
-      f
-    );
-  }
 };
 
 
@@ -242,42 +218,6 @@ proto.pubsubui.TopicSubscription.prototype.setPubsubTopicName = function(value) 
 };
 
 
-/**
- * optional string pubsub_subscriber_name = 3;
- * @return {string}
- */
-proto.pubsubui.TopicSubscription.prototype.getPubsubSubscriberName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.pubsubui.TopicSubscription} returns this
- */
-proto.pubsubui.TopicSubscription.prototype.setPubsubSubscriberName = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional int32 timeout = 4;
- * @return {number}
- */
-proto.pubsubui.TopicSubscription.prototype.getTimeout = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.pubsubui.TopicSubscription} returns this
- */
-proto.pubsubui.TopicSubscription.prototype.setTimeout = function(value) {
-  return jspb.Message.setProto3IntField(this, 4, value);
-};
-
-
 
 
 
@@ -311,7 +251,6 @@ proto.pubsubui.Message.prototype.toObject = function(opt_includeInstance) {
 proto.pubsubui.Message.toObject = function(includeInstance, msg) {
   var f, obj = {
     data: msg.getData_asB64(),
-    isEmpty: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     timestamp: (f = msg.getTimestamp()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
 
@@ -354,10 +293,6 @@ proto.pubsubui.Message.deserializeBinaryFromReader = function(msg, reader) {
       msg.setData(value);
       break;
     case 2:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsEmpty(value);
-      break;
-    case 3:
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setTimestamp(value);
@@ -398,17 +333,10 @@ proto.pubsubui.Message.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getIsEmpty();
-  if (f) {
-    writer.writeBool(
-      2,
-      f
-    );
-  }
   f = message.getTimestamp();
   if (f != null) {
     writer.writeMessage(
-      3,
+      2,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
@@ -459,30 +387,12 @@ proto.pubsubui.Message.prototype.setData = function(value) {
 
 
 /**
- * optional bool is_empty = 2;
- * @return {boolean}
- */
-proto.pubsubui.Message.prototype.getIsEmpty = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.pubsubui.Message} returns this
- */
-proto.pubsubui.Message.prototype.setIsEmpty = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 2, value);
-};
-
-
-/**
- * optional google.protobuf.Timestamp timestamp = 3;
+ * optional google.protobuf.Timestamp timestamp = 2;
  * @return {?proto.google.protobuf.Timestamp}
  */
 proto.pubsubui.Message.prototype.getTimestamp = function() {
   return /** @type{?proto.google.protobuf.Timestamp} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 3));
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 2));
 };
 
 
@@ -491,7 +401,7 @@ proto.pubsubui.Message.prototype.getTimestamp = function() {
  * @return {!proto.pubsubui.Message} returns this
 */
 proto.pubsubui.Message.prototype.setTimestamp = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
+  return jspb.Message.setWrapperField(this, 2, value);
 };
 
 
@@ -509,7 +419,7 @@ proto.pubsubui.Message.prototype.clearTimestamp = function() {
  * @return {boolean}
  */
 proto.pubsubui.Message.prototype.hasTimestamp = function() {
-  return jspb.Message.getField(this, 3) != null;
+  return jspb.Message.getField(this, 2) != null;
 };
 
 

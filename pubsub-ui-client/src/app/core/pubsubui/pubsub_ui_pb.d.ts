@@ -10,12 +10,6 @@ export class TopicSubscription extends jspb.Message {
   getPubsubTopicName(): string;
   setPubsubTopicName(value: string): TopicSubscription;
 
-  getPubsubSubscriberName(): string;
-  setPubsubSubscriberName(value: string): TopicSubscription;
-
-  getTimeout(): number;
-  setTimeout(value: number): TopicSubscription;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TopicSubscription.AsObject;
   static toObject(includeInstance: boolean, msg: TopicSubscription): TopicSubscription.AsObject;
@@ -28,8 +22,6 @@ export namespace TopicSubscription {
   export type AsObject = {
     gcpProjectId: string,
     pubsubTopicName: string,
-    pubsubSubscriberName: string,
-    timeout: number,
   }
 }
 
@@ -38,9 +30,6 @@ export class Message extends jspb.Message {
   getData_asU8(): Uint8Array;
   getData_asB64(): string;
   setData(value: Uint8Array | string): Message;
-
-  getIsEmpty(): boolean;
-  setIsEmpty(value: boolean): Message;
 
   getTimestamp(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setTimestamp(value?: google_protobuf_timestamp_pb.Timestamp): Message;
@@ -58,7 +47,6 @@ export class Message extends jspb.Message {
 export namespace Message {
   export type AsObject = {
     data: Uint8Array | string,
-    isEmpty: boolean,
     timestamp?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }

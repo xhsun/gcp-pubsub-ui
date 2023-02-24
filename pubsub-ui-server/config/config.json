@@ -1,0 +1,5 @@
+{
+    "port": 50051,
+    "timeout": 3,
+    "verbose": true
+}
