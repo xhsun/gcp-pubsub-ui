@@ -20,8 +20,8 @@
   <button mat-button (click)="accordion.closeAll()">Collapse All</button>
 </div>
 
-<mat-accordion>
-  <app-topic *ngFor="let t of this.topics| keyvalue" [projectID]="t.value[0]" [topicName]="t.value[1]" (shouldRemove)="this.removeTopic($event)"></app-topic>
+<mat-accordion multi>
+  <app-topic *ngFor="let t of this.topics;let i = index" [topicIndex]="i" [projectID]="t[0]" [topicName]="t[1]" (shouldRemove)="this.removeTopic($event)"></app-topic>
 </mat-accordion>
 
 

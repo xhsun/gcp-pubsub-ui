@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ClientReadableStream } from 'grpc-web';
-import { from } from 'rxjs';
 import { PubSubUIClient } from '../core/pubsubui/Pubsub_uiServiceClientPb';
 import * as rpcType from '../core/pubsubui/pubsub_ui_pb';
 
@@ -12,11 +11,13 @@ import * as rpcType from '../core/pubsubui/pubsub_ui_pb';
 export class TopicComponent implements OnInit {
   decoder: TextDecoder = new TextDecoder();
   @Input()
+  topicIndex!: number;
+  @Input()
   projectID!: string;
   @Input()
   topicName!: string;
   @Output()
-  shouldRemove = new EventEmitter<[string,string]>();
+  shouldRemove = new EventEmitter<number>();
 
   stream!: ClientReadableStream<rpcType.Message>
   isEnd: boolean=false;
@@ -52,12 +53,12 @@ export class TopicComponent implements OnInit {
     });
   }
 
-  // ngOnDestroy(): void {
-  //   this.stream.cancel();
-  // }
+  ngOnDestroy(): void {
+    this.stream.cancel();
+  }
 
   removeTopic(){
     this.stream.cancel();
-    this.shouldRemove.emit([this.projectID, this.topicName]);
+    this.shouldRemove.emit(this.topicIndex);
   }
 }

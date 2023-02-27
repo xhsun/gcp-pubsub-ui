@@ -1,8 +1,9 @@
 .container {
   height: 200px;
   overflow: auto;
-  display: flex;
-  flex-direction: column-reverse;
-  padding: 0em 1em;
+  padding: 0.5em 1em;
   background-color: #F5F5F5;
+  p{
+    margin: 0;
+  }
 }
