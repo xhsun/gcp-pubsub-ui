@@ -22,7 +22,7 @@ gen-go-grpc: ## Generate gRPC Golang server and client stub
 gen-web-grpc: ## Generate gRPC web client stub
 	@echo "+ $@"
 	mkdir -p $(PROTO_ANGULAR_OUTPUT)
-	$(PROTOC) -I=$(PROTO_DIR) $(PROTO_FILE) --js_out=import_style=commonjs,binary:$(PROTO_ANGULAR_OUTPUT) --grpc-web_out=import_style=typescript,mode=grpcweb:$(PROTO_ANGULAR_OUTPUT)
+	$(PROTOC) -I=$(PROTO_DIR) $(PROTO_FILE) --js_out=import_style=commonjs:$(PROTO_ANGULAR_OUTPUT) --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(PROTO_ANGULAR_OUTPUT)
 
 build-server: ## Builds a static executable
 	@echo "+ $@"

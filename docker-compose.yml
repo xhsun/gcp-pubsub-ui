@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  cloudpubsub:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command:
+      - "gcloud"
+      - "beta"
+      - "emulators"
+      - "pubsub"
+      - "start"
+      - "--host-port=0.0.0.0:8086"
+      - "--project=development"
+    ports:
+      - "8086:8086"
+  envoy:
+    image: envoyproxy/envoy:v1.22.0
+    volumes:
+      - "./envoy.yaml:/etc/envoy/envoy.yaml"
+    network_mode: "host"
+

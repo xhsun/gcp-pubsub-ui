@@ -346,10 +346,10 @@ proto.pubsubui.Message.serializeBinaryToWriter = function(message, writer) {
 
 /**
  * optional bytes data = 1;
- * @return {!(string|Uint8Array)}
+ * @return {string}
  */
 proto.pubsubui.Message.prototype.getData = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 

@@ -1,0 +1,16 @@
+<mat-expansion-panel hideToggle>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{ this.projectID }}: {{ this.topicName }}
+    </mat-panel-title>
+    <mat-panel-description *ngIf="!this.isEnd; else showError">
+      Last refresh date: {{ this.lastUpdate | date : "medium" }}
+    </mat-panel-description>
+    <button mat-icon-button (click)="removeTopic()" color="warn"><mat-icon>clear</mat-icon></button>
+  </mat-expansion-panel-header>
+  <div class="container">
+    <p *ngFor="let m of messages">{{ m }}</p>
+  </div>
+</mat-expansion-panel>
+
+<ng-template #showError> Encountered an error </ng-template>

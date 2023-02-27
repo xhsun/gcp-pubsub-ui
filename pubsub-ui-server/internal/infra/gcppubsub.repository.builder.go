@@ -34,12 +34,13 @@ func (prb *GCPPubSubRepositoryBuilder) WithTopicName(topicName string) core.IPub
 func (prb *GCPPubSubRepositoryBuilder) Build(gcpProjectID string) (core.IPubSubRepository, error) {
 	client, exist := prb.clients[gcpProjectID]
 	if !exist {
-		client, err := NewGCPPubSubRepository(prb.config, gcpProjectID)
+		temp, err := NewGCPPubSubRepository(prb.config, gcpProjectID)
 		if err != nil {
 			log.WithField("gcpProjectID", gcpProjectID).WithError(err).Debug("Failed to create pubsub repository")
 			return nil, err
 		}
-		prb.clients[gcpProjectID] = client
+		prb.clients[gcpProjectID] = temp
+		client = temp
 	}
 
 	if prb.topicName != "" {

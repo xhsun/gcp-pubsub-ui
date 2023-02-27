@@ -59,7 +59,7 @@ func (pr *GCPPubSubRepository) CreateSubscriber(topicName string) error {
 		subscriber = pr.client.Subscription(pr.defaultSubscriberName)
 	}
 	pr.subscribers[topicName] = subscriber
-	return err
+	return nil
 }
 
 // Receive passes the outstanding messages from the subscription to out channel.
