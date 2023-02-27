@@ -51,36 +51,31 @@ func NewMessageStreamService(config *config.Config, pubsubRepositoryBuilder IPub
 func (mss *MessageStreamService) Stream(ctx context.Context, projectID string, topicName string, out chan<- []byte) {
 	logger := log.WithFields(log.Fields{"projectID": projectID, "topicName": topicName})
 
-	client, err := mss.pubsubRepositoryBuilder.WithTopicName(topicName).Build(projectID)
+	client, err := mss.pubsubRepositoryBuilder.Build(projectID, topicName)
 	if err != nil {
 		logger.WithError(err).Error("Failed to create PubSub subscription")
 		close(out)
 		return
 	}
+	client.Receive(ctx, topicName, out)
 
-	data := make(chan []byte, 1)
-	if err := client.Receive(ctx, topicName, data); err != nil {
-		logger.WithError(err).Error("Failed to receive data from PubSub subscription")
-		close(out)
-		return
-	}
-
+	timeout := time.Duration(mss.defaultTimeout) * time.Second
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
 	for {
 		select {
 		case <-ctx.Done():
-			logger.Debug("Context cancelled, close the output channel")
-			close(out)
 			return
-		case message, ok := <-data:
-			if ok {
-				out <- message
-			} else {
-				logger.Debug("data channel closed, no more data to pass on")
-				close(out)
-				return
-			}
-		case <-time.After(time.Duration(mss.defaultTimeout) * time.Second):
+		case <-timer.C:
 			out <- []byte{}
+			timer.Reset(timeout)
+		default:
+			if len(out) > 0 {
+				if !timer.Stop() {
+					<-timer.C
+				}
+				timer.Reset(timeout)
+			}
 		}
 	}
 }

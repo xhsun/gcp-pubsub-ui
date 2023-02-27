@@ -7,12 +7,11 @@ type IPubSubRepository interface {
 	// CreateSubscriber will create a new subscriber to the given topic if there is no pre-existing subscriber for that topic
 	CreateSubscriber(topicName string) error
 	// Receive passes the outstanding messages from the subscription to out channel.
-	// It returns ErrSubscriberNotFound if subscriber not found, call CreateSubscriber to create one.
 	//
 	// The standard way to terminate a Receive is to cancel its context:
 	//
 	//	cctx, cancel := context.WithCancel(ctx)
-	//	err := pr.Receive(cctx, topicName, out)
+	//	pr.Receive(cctx, topicName, out)
 	//	// Call cancel to end Receive
-	Receive(ctx context.Context, topicName string, out chan<- []byte) error
+	Receive(ctx context.Context, topicName string, out chan<- []byte)
 }
