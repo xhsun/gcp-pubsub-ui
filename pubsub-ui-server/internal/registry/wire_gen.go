@@ -20,7 +20,8 @@ func InitializeServer(config2 *config.Config) (*grpc.Server, error) {
 	gcpPubSubRepositoryBuilder := infra.NewGCPPubSubRepositoryBuilder(config2)
 	messageStreamService := core.NewMessageStreamService(config2, gcpPubSubRepositoryBuilder)
 	messageHandler := grpc.NewMessageHandler(messageStreamService)
-	server := grpc.NewServer(config2, messageHandler)
+	healthCheckHandler := grpc.NewHealthCheckHandler()
+	server := grpc.NewServer(config2, messageHandler, healthCheckHandler)
 	return server, nil
 }
 

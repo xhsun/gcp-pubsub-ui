@@ -21,6 +21,6 @@ var ServiceBuilderSet = wire.NewSet(
 )
 
 func InitializeServer(config *config.Config) (*grpc.Server, error) {
-	wire.Build(ServiceBuilderSet, grpc.NewMessageHandler, grpc.NewServer)
+	wire.Build(ServiceBuilderSet, grpc.NewMessageHandler, grpc.NewHealthCheckHandler, grpc.NewServer)
 	return &grpc.Server{}, nil
 }

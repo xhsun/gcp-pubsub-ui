@@ -44,6 +44,18 @@ static_resources:
       type: logical_dns
       connect_timeout: 0.25s
       http2_protocol_options: {}
+      common_lb_config:
+        healthy_panic_threshold:
+          value: 50.0   
+      health_checks:
+        - timeout: 1s
+          interval: 5s
+          interval_jitter: 1s
+          no_traffic_interval: 5s
+          unhealthy_threshold: 1
+          healthy_threshold: 3
+          grpc_health_check:
+            service_name: "pubsubui.PubSubUI"
       lb_policy: round_robin
       load_assignment:
         cluster_name: cluster_0
