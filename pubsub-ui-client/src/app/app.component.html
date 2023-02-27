@@ -1,4 +1,4 @@
-<form [formGroup]="this.form" (ngSubmit)="onSubmit()">
+<form [formGroup]="this.form" #formDirective="ngForm" (ngSubmit)="onSubmit()">
   <mat-form-field appearance="fill">
     <mat-label [attr.for]="this.currentTopic.projectID.key">{{this.currentTopic.projectID.label}}</mat-label>
     <input matInput [formControlName]="this.currentTopic.projectID.key" />

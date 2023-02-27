@@ -12,6 +12,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatIconModule} from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
 
 const rpcClientFactory = () => new PubSubUIClient('http://localhost:9090');
 
@@ -26,7 +27,8 @@ const rpcClientFactory = () => new PubSubUIClient('http://localhost:9090');
     MatExpansionModule,
     MatIconModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [{ provide: PubSubUIClient, useFactory: rpcClientFactory }],
   bootstrap: [AppComponent],

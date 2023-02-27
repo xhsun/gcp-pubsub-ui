@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormGroupDirective, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { Topic } from './core/form/topic.model';
 
@@ -10,6 +10,7 @@ import { Topic } from './core/form/topic.model';
 })
 export class AppComponent {
   @ViewChild(MatAccordion) accordion!: MatAccordion;
+  @ViewChild('formDirective') private formDirective!: NgForm;
 
   topicKeyFormatter='{0}{1}';
   topics: Map<string, [string, string]> = new Map();
@@ -31,8 +32,8 @@ export class AppComponent {
         this.form.controls[this.currentTopic.topicName.key].setErrors({ unique: true });
       } else {
         this.topics.set(key, [id, topic]);
-        this.currentTopic = new Topic();
-        this.form = this.currentTopic.toFormGroup();
+        this.form.reset();
+        this.formDirective.resetForm();
       }
     }
   }

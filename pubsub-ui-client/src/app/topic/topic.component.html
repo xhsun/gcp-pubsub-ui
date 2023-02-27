@@ -3,14 +3,19 @@
     <mat-panel-title>
       {{ this.projectID }}: {{ this.topicName }}
     </mat-panel-title>
-    <mat-panel-description *ngIf="!this.isEnd; else showError">
-      Last refresh date: {{ this.lastUpdate | date : "medium" }}
+    <mat-panel-description>
+      <div *ngIf="!this.isEnd; else showError">
+        <div *ngIf="!!this.lastUpdate; else waitResponse">
+          Refreshed on {{ this.lastUpdate | date : "medium" }}
+        </div>
+      </div>
     </mat-panel-description>
     <button mat-icon-button (click)="removeTopic()" color="warn"><mat-icon>clear</mat-icon></button>
   </mat-expansion-panel-header>
-  <div class="container">
+  <mat-card class="container">
     <p *ngFor="let m of messages">{{ m }}</p>
-  </div>
+  </mat-card>
 </mat-expansion-panel>
 
-<ng-template #showError> Encountered an error </ng-template>
+<ng-template #showError>Encountered an error</ng-template>
+<ng-template #waitResponse>Waiting for server to respond</ng-template>

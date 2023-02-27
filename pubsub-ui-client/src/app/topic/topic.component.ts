@@ -39,7 +39,7 @@ export class TopicComponent implements OnInit {
       this.lastUpdate = timestamp || this.lastUpdate;
       if (data.length > 0){
         this.isEnd = false;
-        this.messages.push(`${timestamp?.toDateString()} ${this.decoder.decode(data)}`)
+        this.messages.push(`${timestamp?.toLocaleTimeString()} ${this.decoder.decode(data)}`)
       }
     });
     this. stream.on("error", (err)=>{
