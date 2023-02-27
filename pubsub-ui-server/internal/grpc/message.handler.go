@@ -27,7 +27,7 @@ func NewMessageHandler(streamer core.IMessageStreamService) *MessageHandler {
 func (mh *MessageHandler) Fetch(topic *pubsubui.TopicSubscription, stream pubsubui.PubSubUI_FetchServer) error {
 	if topic == nil || topic.GcpProjectId == "" || topic.PubsubTopicName == "" {
 		log.Error("Topic information cannot be empty")
-		return status.Error(codes.InvalidArgument, "topic cannot be empty")
+		return status.Error(codes.InvalidArgument, "Please provide valid topic information")
 	}
 
 	logger := log.WithField("projectID", topic.GcpProjectId).WithField("topicName", topic.PubsubTopicName)
@@ -46,14 +46,14 @@ func (mh *MessageHandler) Fetch(topic *pubsubui.TopicSubscription, stream pubsub
 			if ok {
 				err := stream.Send(&pubsubui.Message{Data: message, Timestamp: timestamppb.Now()})
 				if err != nil {
-					logger.WithError(err).Error("Encountered unexpected error while sending data")
+					logger.WithError(err).Error("Failed to send message to client")
 					cancel()
 					return err
 				}
 			} else {
 				logger.Debug("data channel closed, no more data")
 				cancel()
-				return status.Error(codes.Unavailable, "failed to subscribe")
+				return status.Error(codes.Unavailable, "Encountered unexpected error, please try again")
 			}
 		}
 	}

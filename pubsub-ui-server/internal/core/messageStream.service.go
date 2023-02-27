@@ -49,16 +49,18 @@ func NewMessageStreamService(config *config.Config, pubsubRepositoryBuilder IPub
 //	err := mss.Stream(cctx, projectID, topicName, out)
 //	// Call cancel to end Stream
 func (mss *MessageStreamService) Stream(ctx context.Context, projectID string, topicName string, out chan<- []byte) {
+	logger := log.WithFields(log.Fields{"projectID": projectID, "topicName": topicName})
+
 	client, err := mss.pubsubRepositoryBuilder.WithTopicName(topicName).Build(projectID)
 	if err != nil {
-		log.WithFields(log.Fields{"projectID": projectID, "topicName": topicName}).WithError(err).Error("Failed to create PubSub subscription")
+		logger.WithError(err).Error("Failed to create PubSub subscription")
 		close(out)
 		return
 	}
 
 	data := make(chan []byte, 1)
 	if err := client.Receive(ctx, topicName, data); err != nil {
-		log.WithFields(log.Fields{"projectID": projectID, "topicName": topicName}).WithError(err).Error("Failed to receive data from PubSub subscription")
+		logger.WithError(err).Error("Failed to receive data from PubSub subscription")
 		close(out)
 		return
 	}
@@ -66,14 +68,14 @@ func (mss *MessageStreamService) Stream(ctx context.Context, projectID string, t
 	for {
 		select {
 		case <-ctx.Done():
-			log.Debug("Context cancelled, close the output channel")
+			logger.Debug("Context cancelled, close the output channel")
 			close(out)
 			return
 		case message, ok := <-data:
 			if ok {
 				out <- message
 			} else {
-				log.Debug("data channel closed, no more data to pass on")
+				logger.Debug("data channel closed, no more data to pass on")
 				close(out)
 				return
 			}

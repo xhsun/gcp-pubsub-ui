@@ -7,8 +7,6 @@ import (
 	"cloud.google.com/go/pubsub"
 	log "github.com/sirupsen/logrus"
 	"github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/config"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -37,26 +35,37 @@ func NewGCPPubSubRepository(config *config.Config, GCPProjectID string) (*GCPPub
 
 // CreateSubscriber will create a new subscriber to the given topic if there is no pre-existing subscriber for that topic
 func (pr *GCPPubSubRepository) CreateSubscriber(topicName string) error {
-	_, exist := pr.subscribers[topicName]
-	if exist {
+	_, exists := pr.subscribers[topicName]
+	if exists {
 		return nil
 	}
-	topic, err := pr.client.CreateTopic(context.Background(), topicName)
+	logger := log.WithField("topicName", topicName)
+
+	topic := pr.client.Topic(topicName)
+	exists, err := topic.Exists(context.Background())
 	if err != nil {
-		if status.Convert(err).Code() != codes.AlreadyExists {
-			log.WithField("topicName", topicName).WithError(err).Debug("Failed to create GCP PubSub topic")
+		logger.WithError(err).Debug("Failed to check if GCP PubSub topic exist or not")
+		return err
+	}
+	if !exists {
+		logger.Debug("Topic not found, creating it")
+		if _, err = pr.client.CreateTopic(context.Background(), topicName); err != nil {
+			logger.WithError(err).Debug("Failed to create GCP PubSub topic")
 			return err
 		}
-		topic = pr.client.Topic(topicName)
 	}
 
-	subscriber, err := pr.client.CreateSubscription(context.Background(), pr.defaultSubscriberName, pubsub.SubscriptionConfig{Topic: topic})
+	subscriber := pr.client.Subscription(pr.defaultSubscriberName)
+	exists, err = subscriber.Exists(context.Background())
 	if err != nil {
-		if status.Convert(err).Code() != codes.AlreadyExists {
-			log.WithFields(log.Fields{"topicName": topicName, "subscriberName": pr.defaultSubscriberName}).WithError(err).Debug("Failed to create GCP PubSub topic subscriber")
+		logger.WithError(err).Debug("Failed to check if GCP PubSub subscriber exist or not")
+		return err
+	}
+	if !exists {
+		if _, err = pr.client.CreateSubscription(context.Background(), pr.defaultSubscriberName, pubsub.SubscriptionConfig{Topic: topic}); err != nil {
+			logger.WithError(err).Debug("Failed to create GCP PubSub topic subscriber")
 			return err
 		}
-		subscriber = pr.client.Subscription(pr.defaultSubscriberName)
 	}
 	pr.subscribers[topicName] = subscriber
 	return nil
@@ -82,6 +91,7 @@ func (pr *GCPPubSubRepository) Receive(ctx context.Context, topicName string, ou
 			log.Debug("Context cancelled, close the output channel")
 			close(out)
 		case out <- message.Data:
+			message.Ack()
 		}
 	})
 
