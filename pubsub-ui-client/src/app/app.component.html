@@ -12,10 +12,12 @@
     <mat-error *ngIf="this.form.controls[this.currentTopic.topicName.key].hasError('unique')"> Already subscribed to this topic </mat-error>
   </mat-form-field>
 
-  <button mat-flat-button>Subscribe</button>
+  <button mat-button color="primary">Subscribe</button>
 </form>
 
-<div>
+<mat-divider></mat-divider>
+
+<div class="accordion-buttons">
   <button mat-button (click)="accordion.openAll()">Expand All</button>
   <button mat-button (click)="accordion.closeAll()">Collapse All</button>
 </div>

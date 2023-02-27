@@ -1,0 +1,17 @@
+form{
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  button{
+    margin-top: -1em;
+    font-weight: 600;
+  }
+}
+
+mat-divider{
+  margin-top: 0.5em;
+}
+
+.accordion-buttons{
+  margin: 1em 0;
+}
