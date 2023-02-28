@@ -14,8 +14,9 @@ import { MatInputModule } from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
+import { environment } from 'src/environments/environment';
 
-const rpcClientFactory = () => new PubSubUIClient('http://localhost:9090');
+const rpcClientFactory = () => new PubSubUIClient(environment.apiUrl);
 
 @NgModule({
   declarations: [AppComponent, TopicComponent],
