@@ -27,30 +27,29 @@ export class TopicComponent implements OnInit {
   constructor(private rpcClient: PubSubUIClient){}
 
   ngOnInit() {
-    const request = new rpcType.TopicSubscription().setGcpProjectId(this.projectID).setPubsubTopicName(this.topicName);
-    this.stream = this.rpcClient.fetch(request);
-    this.stream.on('status', function(status) {
-      console.log(status.code);
-      console.log(status.details);
-      console.log(status.metadata);
-    });
-    this.stream.on("data", (message)=>{
-      const timestamp = message.getTimestamp()?.toDate();
-      const data = message.getData_asU8()
-      this.lastUpdate = timestamp || this.lastUpdate;
-      if (data.length > 0){
-        this.isEnd = false;
-        this.messages.push(`${timestamp?.toLocaleTimeString()} ${this.decoder.decode(data)}`)
-      }
-    });
-    this. stream.on("error", (err)=>{
-      this.isEnd = true;
-      this.messages.push(err.message);
-    });
-    this.stream.on("end", ()=>{
-      this.isEnd = true;
-      this.messages.push("Connection closed, no more data to display");
-    });
+    const request = new rpcType.TopicSubscription()
+      .setGcpProjectId(this.projectID)
+      .setPubsubTopicName(this.topicName);
+      this.stream = this.rpcClient.fetch(request);
+      this.stream.on('data', (message) => {
+        const timestamp = message.getTimestamp()?.toDate();
+        const data = message.getData_asU8();
+        this.lastUpdate = timestamp || this.lastUpdate;
+        if (data.length > 0) {
+          this.isEnd = false;
+          this.messages.push(
+            `${timestamp?.toLocaleTimeString()} ${this.decoder.decode(data)}`
+          );
+        }
+      });
+      this.stream.on('error', (err) => {
+        this.isEnd = true;
+        this.messages.push(err.message);
+      });
+      this.stream.on('end', () => {
+        this.isEnd = true;
+        this.messages.push('Connection closed, no more data to display');
+      });
   }
 
   ngOnDestroy(): void {
@@ -58,7 +57,6 @@ export class TopicComponent implements OnInit {
   }
 
   removeTopic(){
-    this.stream.cancel();
     this.shouldRemove.emit(this.topicIndex);
   }
 }

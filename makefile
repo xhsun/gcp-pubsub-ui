@@ -1,11 +1,13 @@
 SHELL := /bin/bash
 PREFIX?=$(shell pwd)
 GO := go
+NPM := npm
 PROTOC := protoc
 
 GO_LDFLAGS_STATIC:=-ldflags "-extldflags -static"
 GO_SERVER_PATH:=$(PREFIX)/pubsub-ui-server
 GO_SERVER_OUT:=$(PREFIX)/pubsubui_server
+ANGULAR_CLIENT_PATH:=$(PREFIX)/pubsub-ui-client
 
 PROTO_DIR:= $(PREFIX)/pubsub-ui
 PROTO_FILE := pubsub_ui.proto
@@ -31,6 +33,10 @@ build-server: ## Builds a static executable
 run-server: ## Run server
 	@echo "+ $@"
 	cd $(GO_SERVER_PATH)/ && $(GO) run cmd/main.go
+
+run-client: ## Run client
+	@echo "+ $@"
+	cd $(ANGULAR_CLIENT_PATH)/ && $(NPM) run start
 
 clean:
 	@echo "+ $@"
