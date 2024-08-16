@@ -1,0 +1,22 @@
+version: v2
+
+# managed:
+#   enabled: true
+#   disable:
+#     - module: buf.build/googleapis/googleapis
+
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.34.2
+    out: pubsub-ui-server/internal/pubsubui
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go:v1.5.1
+    out: pubsub-ui-server/internal/pubsubui
+    opt: paths=source_relative
+  - remote: buf.build/grpc/web:v1.5.0
+    out: pubsub-ui-client/src/app/core/pubsubui
+    opt:
+      - import_style=typescript
+      - mode=grpcwebtext
+  - remote: buf.build/protocolbuffers/js:v3.21.2
+    out: pubsub-ui-client/src/app/core/pubsubui
+    opt: import_style=commonjs
