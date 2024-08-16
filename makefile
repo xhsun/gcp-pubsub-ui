@@ -13,7 +13,3 @@ run-server: ## Run server
 run-client: ## Run client
 	@echo "+ $@"
 	cd $(ANGULAR_CLIENT_PATH)/ && $(NPM) run start
-
-clean:
-	@echo "+ $@"
-	$(RM) $(GO_SERVER_OUT)
