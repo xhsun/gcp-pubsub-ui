@@ -13,8 +13,11 @@ plugins:
   - remote: buf.build/protocolbuffers/go:v1.34.2
     out: pubsub-ui-server/internal/pubsubui
     opt: paths=source_relative
-  # - remote: buf.build/grpc/go:v1.5.1
-  #   out: pubsub-ui-server/internal/pubsubui
-  #   opt: paths=source_relative
-  # - remote: buf.build/grpc-ecosystem/openapiv2:v2.21.0
-  #   out: gen/openapiv2
+  - remote: buf.build/connectrpc/es:v1.4.0
+    out: pubsub-ui-client/src/app/core/pubsubui
+    opt: 
+      - target=ts
+      - import_extension=none
+  - remote: buf.build/bufbuild/es:v1.7.2
+    out: pubsub-ui-client/src/app/core/pubsubui
+    opt: target=ts 
