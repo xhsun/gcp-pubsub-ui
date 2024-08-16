@@ -23,7 +23,6 @@ const rpcClientFactory = () => {
   const transport = createConnectTransport({
     baseUrl: environment.apiUrl,
   });
-  const t: PromiseClient<typeof PubSubUI> = createPromiseClient(PubSubUI, transport);
   return createPromiseClient(PubSubUI, transport)};
 
 @NgModule({
