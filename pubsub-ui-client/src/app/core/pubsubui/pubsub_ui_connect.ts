@@ -23,6 +23,15 @@ export const PubSubUI = {
       O: Message,
       kind: MethodKind.ServerStreaming,
     },
+    /**
+     * @generated from rpc pubsubui.PubSubUI.Echo
+     */
+    echo: {
+      name: "Echo",
+      I: TopicSubscription,
+      O: TopicSubscription,
+      kind: MethodKind.Unary,
+    },
   }
 } as const;
 

@@ -35,18 +35,22 @@ const (
 const (
 	// PubSubUIFetchProcedure is the fully-qualified name of the PubSubUI's Fetch RPC.
 	PubSubUIFetchProcedure = "/pubsubui.PubSubUI/Fetch"
+	// PubSubUIEchoProcedure is the fully-qualified name of the PubSubUI's Echo RPC.
+	PubSubUIEchoProcedure = "/pubsubui.PubSubUI/Echo"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	pubSubUIServiceDescriptor     = pubsubui.File_pubsub_ui_proto.Services().ByName("PubSubUI")
 	pubSubUIFetchMethodDescriptor = pubSubUIServiceDescriptor.Methods().ByName("Fetch")
+	pubSubUIEchoMethodDescriptor  = pubSubUIServiceDescriptor.Methods().ByName("Echo")
 )
 
 // PubSubUIClient is a client for the pubsubui.PubSubUI service.
 type PubSubUIClient interface {
 	// Fetch PubSub message from the provided PubSub Topic
 	Fetch(context.Context, *connect.Request[pubsubui.TopicSubscription]) (*connect.ServerStreamForClient[pubsubui.Message], error)
+	Echo(context.Context, *connect.Request[pubsubui.TopicSubscription]) (*connect.Response[pubsubui.TopicSubscription], error)
 }
 
 // NewPubSubUIClient constructs a client for the pubsubui.PubSubUI service. By default, it uses the
@@ -65,12 +69,19 @@ func NewPubSubUIClient(httpClient connect.HTTPClient, baseURL string, opts ...co
 			connect.WithSchema(pubSubUIFetchMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		echo: connect.NewClient[pubsubui.TopicSubscription, pubsubui.TopicSubscription](
+			httpClient,
+			baseURL+PubSubUIEchoProcedure,
+			connect.WithSchema(pubSubUIEchoMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // pubSubUIClient implements PubSubUIClient.
 type pubSubUIClient struct {
 	fetch *connect.Client[pubsubui.TopicSubscription, pubsubui.Message]
+	echo  *connect.Client[pubsubui.TopicSubscription, pubsubui.TopicSubscription]
 }
 
 // Fetch calls pubsubui.PubSubUI.Fetch.
@@ -78,10 +89,16 @@ func (c *pubSubUIClient) Fetch(ctx context.Context, req *connect.Request[pubsubu
 	return c.fetch.CallServerStream(ctx, req)
 }
 
+// Echo calls pubsubui.PubSubUI.Echo.
+func (c *pubSubUIClient) Echo(ctx context.Context, req *connect.Request[pubsubui.TopicSubscription]) (*connect.Response[pubsubui.TopicSubscription], error) {
+	return c.echo.CallUnary(ctx, req)
+}
+
 // PubSubUIHandler is an implementation of the pubsubui.PubSubUI service.
 type PubSubUIHandler interface {
 	// Fetch PubSub message from the provided PubSub Topic
 	Fetch(context.Context, *connect.Request[pubsubui.TopicSubscription], *connect.ServerStream[pubsubui.Message]) error
+	Echo(context.Context, *connect.Request[pubsubui.TopicSubscription]) (*connect.Response[pubsubui.TopicSubscription], error)
 }
 
 // NewPubSubUIHandler builds an HTTP handler from the service implementation. It returns the path on
@@ -96,10 +113,18 @@ func NewPubSubUIHandler(svc PubSubUIHandler, opts ...connect.HandlerOption) (str
 		connect.WithSchema(pubSubUIFetchMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	pubSubUIEchoHandler := connect.NewUnaryHandler(
+		PubSubUIEchoProcedure,
+		svc.Echo,
+		connect.WithSchema(pubSubUIEchoMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/pubsubui.PubSubUI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PubSubUIFetchProcedure:
 			pubSubUIFetchHandler.ServeHTTP(w, r)
+		case PubSubUIEchoProcedure:
+			pubSubUIEchoHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -111,4 +136,8 @@ type UnimplementedPubSubUIHandler struct{}
 
 func (UnimplementedPubSubUIHandler) Fetch(context.Context, *connect.Request[pubsubui.TopicSubscription], *connect.ServerStream[pubsubui.Message]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("pubsubui.PubSubUI.Fetch is not implemented"))
+}
+
+func (UnimplementedPubSubUIHandler) Echo(context.Context, *connect.Request[pubsubui.TopicSubscription]) (*connect.Response[pubsubui.TopicSubscription], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pubsubui.PubSubUI.Echo is not implemented"))
 }

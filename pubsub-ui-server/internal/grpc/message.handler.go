@@ -61,3 +61,15 @@ func (mh *MessageHandler) Fetch(ctx context.Context, request *connect.Request[pu
 		}
 	}
 }
+
+func (mh *MessageHandler) Echo(ctx context.Context, request *connect.Request[pubsubui.TopicSubscription]) (*connect.Response[pubsubui.TopicSubscription], error) {
+	if request == nil || request.Msg == nil || request.Msg.GcpProjectId == "" || request.Msg.PubsubTopicName == "" {
+		log.Error("Topic information cannot be empty")
+		return nil, connect.NewWireError(connect.CodeInvalidArgument, errors.New("please provide valid topic information"))
+	}
+	projectID := request.Msg.GcpProjectId
+	topicName := request.Msg.PubsubTopicName
+	logger := log.WithField("projectID", projectID).WithField("topicName", topicName)
+	logger.Debug("Start echoing")
+	return connect.NewResponse(request.Msg), nil
+}
