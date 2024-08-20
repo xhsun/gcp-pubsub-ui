@@ -13,3 +13,10 @@ run-server: ## Run server
 run-client: ## Run client
 	@echo "+ $@"
 	cd $(ANGULAR_CLIENT_PATH)/ && $(NPM) run start
+
+build-rtk:
+	cd openapi && \
+	npm run spec:bundle && \
+	npm run spec:bundle:json && \
+	npm run codegen && \
+	npm run build

@@ -21,5 +21,7 @@ plugins:
   - remote: buf.build/bufbuild/es:v1.7.2
     out: pubsub-ui-client/src/app/core/pubsubui
     opt: target=ts 
-  - remote: buf.build/grpc-ecosystem/openapiv2:v2.22.0
+  - remote: buf.build/community/google-gnostic-openapi:v0.7.0
     out: openapi
+    opt:
+      - paths=source_relative
