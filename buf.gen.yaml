@@ -22,4 +22,4 @@ plugins:
     out: pubsub-ui-client/src/app/core/pubsubui
     opt: target=ts 
   - remote: buf.build/grpc-ecosystem/openapiv2:v2.22.0
-    out: gen
+    out: openapi
