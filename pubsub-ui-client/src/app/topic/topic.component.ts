@@ -21,6 +21,7 @@ export class TopicComponent implements OnInit {
   shouldRemove = new EventEmitter<number>();
 
   stream!: Subscription;
+  streamEnder = new AbortController();
   isEnd: boolean=false;
   lastUpdate: Date | undefined;
   messages: string[]=[]
@@ -34,7 +35,7 @@ export class TopicComponent implements OnInit {
     this.stream = from(this.rpcClient.fetch({
       gcpProjectId: this.projectID,
       pubsubTopicName: this.topicName,
-    })).subscribe({
+    }, {signal: this.streamEnder.signal})).subscribe({
       next:message => {
         const timestamp = message.timestamp?.toDate();
         const data = message.data;
@@ -59,6 +60,7 @@ export class TopicComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.stream.unsubscribe();
+    this.streamEnder.abort();
   }
 
   removeTopic(){
