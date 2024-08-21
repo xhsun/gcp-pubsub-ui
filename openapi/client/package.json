@@ -6,8 +6,8 @@
   "types": "./dist/index.d.ts",
   "source": "index.ts",
   "scripts": {
-    "spec:bundle": "openapi bundle openapi.yaml --output _build/pubsubui.yaml",
-    "spec:bundle:json": "openapi bundle openapi.yaml --format json --output _build/pubsubui.json",
+    "spec:bundle": "openapi bundle ../openapi.yaml --output _build/pubsubui.yaml",
+    "spec:bundle:json": "openapi bundle ../openapi.yaml --format json --output _build/pubsubui.json",
     "codegen": "npx @rtk-query/codegen-openapi config.ts",
     "build": "tsc"
   },
