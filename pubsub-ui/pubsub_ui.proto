@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pubsubui;
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/pubsubui";
@@ -8,6 +9,12 @@ option go_package = "github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/pu
 service PubSubUI {
   // Fetch PubSub message from the provided PubSub Topic
   rpc Fetch(TopicSubscription) returns (stream Message) {}
+  rpc Echo(TopicSubscription) returns (TopicSubscription) {
+    option (google.api.http) = {
+      post: "/pubsubui.PubSubUI/Echo"
+      body: "*"
+    };
+  }
 }
 
 message TopicSubscription {

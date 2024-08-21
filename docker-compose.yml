@@ -13,23 +13,17 @@ services:
       - "--project=development"
     ports:
       - "8086:8086"
-  envoy:
-    image: envoyproxy/envoy:v1.22.0
-    volumes:
-      - "./pubsub-ui-server/envoy.yaml:/etc/envoy/envoy.yaml"
-    network_mode: "host"
-  # server:
-  #   build:
-  #     context: ./pubsub-ui-server
-  #   ports:
-  #     - "50051:50051"
-  #     - "9090:9090"
-  # client:
-  #   build:
-  #     context: ./pubsub-ui-client
-  #   ports:
-  #     - "9091:80"
-  #   links:
-  #     - server
-  #   depends_on:
-  #     - server
+  server:
+    build:
+      context: ./pubsub-ui-server
+    ports:
+      - "50051:50051"
+  client:
+    build:
+      context: ./pubsub-ui-client
+    ports:
+      - "9091:80"
+    links:
+      - server
+    depends_on:
+      - server

@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY . .
 
-ARG PUBSUB_UI_BACKEND_URL=http://localhost:9090
+ARG PUBSUB_UI_BACKEND_URL=http://localhost:50051
 RUN sed -i "s|PUBSUB_UI_BACKEND_URL|$PUBSUB_UI_BACKEND_URL|" src/environments/environment.ts
 
 RUN npm run build:prod

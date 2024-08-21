@@ -1,0 +1,30 @@
+{
+  "name": "@xhsun/pubsub-ui",
+  "description": "PubSub UI Client Spec",
+  "author": "xhsun",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "source": "index.ts",
+  "scripts": {
+    "spec:bundle": "openapi bundle ../openapi.yaml --output _build/pubsubui.yaml",
+    "spec:bundle:json": "openapi bundle ../openapi.yaml --format json --output _build/pubsubui.json",
+    "codegen": "npx @rtk-query/codegen-openapi config.ts",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@redocly/openapi-cli": "^1.0.0-beta.66",
+    "@reduxjs/toolkit": "^1.7.1",
+    "@rtk-query/codegen-openapi": "^1.0.0",
+    "@types/node": "^16.11.12",
+    "react": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.5.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0"
+  },
+  "dependencies": {
+    "@types/react-redux": "^7.1.33"
+  }
+}

@@ -21,9 +21,9 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
-    "@improbable-eng/grpc-web": "^0.15.0",
-    "google-protobuf": "^3.21.2",
-    "grpc-web": "^1.4.2",
+    "@bufbuild/protobuf": "^1.10.0",
+    "@connectrpc/connect": "^1.4.0",
+    "@connectrpc/connect-web": "^1.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"

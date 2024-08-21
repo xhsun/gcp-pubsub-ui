@@ -2,13 +2,17 @@ package grpc
 
 import (
 	"fmt"
-	"net"
+	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	"connectrpc.com/grpchealth"
+	"connectrpc.com/grpcreflect"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
+
+	connectcors "connectrpc.com/cors"
+	"github.com/rs/cors"
 	"github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/config"
-	"github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/pubsubui"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health/grpc_health_v1"
+	"github.com/xhsun/gcp-pubsub-ui/pubsub-ui-server/internal/pubsubui/pubsubuiconnect"
 )
 
 // Server - The gRPC server
@@ -29,14 +33,35 @@ func NewServer(config *config.Config, messageHandler *MessageHandler, healthChec
 
 // Start starts the gRPC server
 func (s *Server) Start() error {
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", s.config.Port))
-	if err != nil {
-		log.WithError(err).Fatalf("failed to listen to port %d", s.config.Port)
-	}
+	mux := http.NewServeMux()
+	// protovalidate interceptor: https://github.com/connectrpc/validate-go
+	// otel interceptor:
+	//  - https://github.com/connectrpc/otelconnect-go
+	//  - https://connectrpc.com/docs/go/observability
+	mux.Handle(pubsubuiconnect.NewPubSubUIHandler(s.messageHandler))
+	// gRPC health API support
+	mux.Handle(grpchealth.NewHandler(grpchealth.NewStaticChecker(
+		pubsubuiconnect.PubSubUIName,
+	)))
+	// gRPC reflect support
+	reflector := grpcreflect.NewStaticReflector(
+		pubsubuiconnect.PubSubUIName,
+	)
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector)) // Support backwards compatibility
+	return http.ListenAndServe(
+		fmt.Sprintf("localhost:%d", s.config.Port),
+		h2c.NewHandler(withCORS(mux), &http2.Server{}),
+	)
+}
 
-	grpcServer := grpc.NewServer([]grpc.ServerOption{}...)
-	pubsubui.RegisterPubSubUIServer(grpcServer, s.messageHandler)
-	grpc_health_v1.RegisterHealthServer(grpcServer, s.healthCheckHandler)
-	log.Info("Started PubSub UI server")
-	return grpcServer.Serve(lis)
+// withCORS adds CORS support to a Connect HTTP handler.
+func withCORS(h http.Handler) http.Handler {
+	middleware := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: connectcors.AllowedMethods(),
+		AllowedHeaders: connectcors.AllowedHeaders(),
+		ExposedHeaders: connectcors.ExposedHeaders(),
+	})
+	return middleware.Handler(h)
 }

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.extend.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": true,
+    "moduleResolution": "node",
+    "strictPropertyInitialization": false
+  },
+  "files": ["index.ts"],
+}
